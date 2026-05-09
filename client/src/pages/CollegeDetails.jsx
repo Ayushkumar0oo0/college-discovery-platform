@@ -1,93 +1,58 @@
 import { useEffect, useState } from "react";
-
-import axios from "axios";
-
 import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const CollegeDetails = () => {
   const { id } = useParams();
-
   const [college, setCollege] = useState(null);
 
   useEffect(() => {
-    const fetchCollege = async () => {
+    const fetchDetail = async () => {
       try {
-        const { data } = await axios.get(
-          `https://college-backend-x811.onrender.com/api/colleges/${id}`,
-        );
-
+        const { token } = JSON.parse(localStorage.getItem("userInfo"));
+        const { data } = await axios.get(`https://college-backend-x811.onrender.com/api/colleges/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         setCollege(data);
       } catch (error) {
-        console.log(error);
+        console.error("Error loading details:", error);
       }
     };
-
-    fetchCollege();
+    fetchDetail();
   }, [id]);
 
-  if (!college) {
-    return <div className="text-center mt-20 text-3xl">Loading...</div>;
-  }
+  if (!college) return <div className="text-center mt-20 text-xl font-bold">Loading Property Data...</div>;
 
   return (
-    <div className="bg-gray-100 min-h-screen p-8">
-      <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
-        <img
-          src={college.image}
-          alt={college.name}
-          className="w-full h-96 object-cover"
-        />
-
+    <div className="p-10 bg-gray-50 min-h-screen flex justify-center">
+      <div className="max-w-3xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
+        <img src={college.image} className="w-full h-72 object-cover" alt={college.name} />
         <div className="p-8">
-          <h1 className="text-4xl font-bold">{college.name}</h1>
-
-          <p className="text-gray-600 text-lg mt-3">📍 {college.location}</p>
-
-          <div className="grid md:grid-cols-3 gap-6 mt-8">
-            <div className="bg-blue-100 p-6 rounded-xl">
-              <h2 className="text-xl font-bold">Fees</h2>
-
-              <p className="mt-2 text-2xl">₹{college.fees}</p>
+          <h1 className="text-4xl font-bold text-blue-900">{college.name}</h1>
+          <p className="text-gray-600 text-lg mt-2">Location: {college.location}</p>
+          
+          <div className="grid grid-cols-2 gap-6 mt-8">
+            <div className="p-4 bg-blue-50 rounded-2xl">
+              <span className="block text-sm text-gray-500">Annual Fees</span>
+              <span className="text-2xl font-bold text-blue-700">₹{college.fees}</span>
             </div>
-
-            <div className="bg-yellow-100 p-6 rounded-xl">
-              <h2 className="text-xl font-bold">Rating</h2>
-
-              <p className="mt-2 text-2xl">⭐ {college.rating}</p>
+            <div className="p-4 bg-yellow-50 rounded-2xl">
+              <span className="block text-sm text-gray-500">Student Rating</span>
+              <span className="text-2xl font-bold text-yellow-600">⭐ {college.rating}</span>
             </div>
-
-            <div className="bg-green-100 p-6 rounded-xl">
-              <h2 className="text-xl font-bold">Placements</h2>
-
-              <p className="mt-2 text-2xl">{college.placements}</p>
+            <div className="p-4 bg-green-50 rounded-2xl">
+              <span className="block text-sm text-gray-500">Placement Rate</span>
+              <span className="text-2xl font-bold text-green-700">{college.placements}</span>
+            </div>
+            <div className="p-4 bg-purple-50 rounded-2xl">
+              <span className="block text-sm text-gray-500">Courses</span>
+              <span className="text-lg font-semibold">{college.courses?.join(", ")}</span>
             </div>
           </div>
 
           <div className="mt-10">
-            <h2 className="text-3xl font-bold mb-5">Courses Offered</h2>
-
-            <div className="flex flex-wrap gap-4">
-              {college.courses.map((course, index) => (
-                <span
-                  key={index}
-                  className="bg-blue-600 text-white px-5 py-2 rounded-full"
-                >
-                  {course}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-10">
-            <h2 className="text-3xl font-bold mb-5">Student Reviews</h2>
-
-            <div className="bg-gray-100 p-5 rounded-xl">
-              Great campus life and placements.
-            </div>
-
-            <div className="bg-gray-100 p-5 rounded-xl mt-4">
-              Faculty and infrastructure are very good.
-            </div>
+            <h3 className="text-xl font-bold mb-4">About the Institution</h3>
+            <p className="text-gray-700 leading-relaxed">{college.description || "Detailed description of academic excellence and campus life."}</p>
           </div>
         </div>
       </div>
