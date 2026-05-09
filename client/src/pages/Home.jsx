@@ -5,25 +5,20 @@ import axios from "axios";
 import CollegeCard from "../components/CollegeCard";
 
 const Home = () => {
-  const [colleges, setColleges] =
-    useState([]);
+  const [colleges, setColleges] = useState([]);
 
-  const [filteredColleges, setFilteredColleges] =
-    useState([]);
+  const [filteredColleges, setFilteredColleges] = useState([]);
 
-  const [search, setSearch] =
-    useState("");
+  const [search, setSearch] = useState("");
 
-  const [location, setLocation] =
-    useState("");
+  const [location, setLocation] = useState("");
 
   useEffect(() => {
     const fetchColleges = async () => {
       try {
-        const { data } =
-          await axios.get(
-            "http://localhost:5000/api/colleges"
-          );
+        const { data } = await axios.get(
+          "https://college-backend-x811.onrender.com/api/colleges",
+        );
 
         setColleges(data);
 
@@ -37,18 +32,12 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    let filtered = colleges.filter(
-      (college) =>
-        college.name
-          .toLowerCase()
-          .includes(search.toLowerCase())
+    let filtered = colleges.filter((college) =>
+      college.name.toLowerCase().includes(search.toLowerCase()),
     );
 
     if (location !== "") {
-      filtered = filtered.filter(
-        (college) =>
-          college.location === location
-      );
+      filtered = filtered.filter((college) => college.location === location);
     }
 
     setFilteredColleges(filtered);
@@ -65,55 +54,34 @@ const Home = () => {
           type="text"
           placeholder="Search college..."
           value={search}
-          onChange={(e) =>
-            setSearch(e.target.value)
-          }
+          onChange={(e) => setSearch(e.target.value)}
           className="w-full p-4 rounded-xl border border-gray-300 outline-none bg-white"
         />
 
         <select
           value={location}
-          onChange={(e) =>
-            setLocation(e.target.value)
-          }
+          onChange={(e) => setLocation(e.target.value)}
           className="w-full mt-4 p-4 rounded-xl border border-gray-300 outline-none bg-white"
         >
-          <option value="">
-            All Locations
-          </option>
+          <option value="">All Locations</option>
 
-          <option value="Delhi">
-            Delhi
-          </option>
+          <option value="Delhi">Delhi</option>
 
-          <option value="Bihar">
-            Bihar
-          </option>
+          <option value="Bihar">Bihar</option>
 
-          <option value="Rajasthan">
-            Rajasthan
-          </option>
+          <option value="Rajasthan">Rajasthan</option>
 
-          <option value="Mumbai">
-            Mumbai
-          </option>
+          <option value="Mumbai">Mumbai</option>
 
-          <option value="Bangalore">
-            Bangalore
-          </option>
+          <option value="Bangalore">Bangalore</option>
         </select>
       </div>
 
       {filteredColleges.length > 0 ? (
         <div className="grid md:grid-cols-3 gap-8">
-          {filteredColleges.map(
-            (college) => (
-              <CollegeCard
-                key={college._id}
-                college={college}
-              />
-            )
-          )}
+          {filteredColleges.map((college) => (
+            <CollegeCard key={college._id} college={college} />
+          ))}
         </div>
       ) : (
         <div className="text-center text-2xl text-gray-500 mt-20">
