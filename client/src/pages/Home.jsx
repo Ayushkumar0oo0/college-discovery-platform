@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import axios from "axios";
 
-import CollegeCard from "../components/CollegeCard";
+import CollegeCard from "../components/collegeCard";
 
 const Home = () => {
   const [colleges, setColleges] = useState([]);
