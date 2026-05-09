@@ -1,11 +1,13 @@
-import React, { useState } from "react";
-
+import { useState } from "react";
 import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
-
   const [password, setPassword] = useState("");
+  
+  // 1. Initialize the navigate function
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -16,46 +18,64 @@ const Login = () => {
         {
           email,
           password,
-        },
+        }
       );
 
+      // Save token and user info
       localStorage.setItem("userInfo", JSON.stringify(data));
 
-      alert("Login Successful");
-    } catch (error) {
-      console.log(error);
+      // Optional: You can remove this alert if you want an instant seamless redirect
+      alert("Login Successful!");
 
-      alert("Invalid Credentials");
+      // 2. Navigate directly to the Home page
+      navigate("/");
+
+    } catch (error) {
+      console.error(error);
+      alert(error.response?.data?.message || "Invalid Credentials");
     }
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen flex justify-center items-center">
+    <div className="bg-gray-100 min-h-screen flex justify-center items-center p-4">
       <form
         onSubmit={handleLogin}
-        className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md"
+        className="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md border border-gray-100"
       >
-        <h1 className="text-3xl font-bold mb-6 text-center">Login</h1>
+        <h1 className="text-3xl font-bold mb-8 text-center text-blue-900">
+          Welcome Back
+        </h1>
 
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full p-4 border rounded-xl mb-4"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <div className="space-y-4 mb-6">
+          <input
+            type="email"
+            placeholder="Email Address"
+            className="w-full p-4 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none bg-gray-50"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
 
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full p-4 border rounded-xl mb-4"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full p-4 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none bg-gray-50"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
 
-        <button className="w-full bg-blue-600 text-white p-4 rounded-xl hover:bg-blue-700">
+        <button className="w-full bg-blue-600 text-white p-4 rounded-xl font-bold hover:bg-blue-700 transition shadow-lg">
           Login
         </button>
+
+        <p className="mt-6 text-center text-gray-600">
+          Don't have an account?{" "}
+          <Link to="/register" className="text-blue-600 font-bold hover:underline">
+            Register here
+          </Link>
+        </p>
       </form>
     </div>
   );
